@@ -1,6 +1,6 @@
 let word = [];
 let foundList = [];
-
+var inputField = document.querySelector("input.fld");
 fetch('words.json')
   .then(response => {
     return response.json();
@@ -11,9 +11,7 @@ fetch('words.json')
 
     for (let i = 0; i < 7; i++) {
         document.querySelectorAll(".letter-bubble")[i].addEventListener("click", function () {
-            var letterValue = this.innerHTML;
-            var currentValue = document.querySelector("input.fld").value;
-            document.querySelector("input.fld").value = currentValue + letterValue;
+            inputField.value += this.innerHTML;
         });
     }
 
@@ -69,7 +67,8 @@ fetch('words.json')
             }
         }
          else {
-            alert("Not a valid word!");     
+            alert("Not a valid word!");
+            document.querySelector("input.fld").value = "";     
             if (loss < document.querySelectorAll(".life div img").length) {
                 document.querySelectorAll(".life div img")[loss].src = "Assets/Images/heart-svgrepo-com.svg";
                 loss++;
@@ -86,12 +85,6 @@ fetch('words.json')
 
     document.querySelector("button.erase").addEventListener("click", function () {
         document.querySelector("input.fld").value = document.querySelector("input.fld").value.slice(0, -1);
-    });
-
-    document.addEventListener("keydown", function (event) {
-        if (event.key == "Backspace") {
-            document.querySelector("input.fld").value = document.querySelector("input.fld").value.slice(0, -1);
-        }
     });
 
     document.querySelector(".win button").addEventListener("click",function(){
@@ -116,51 +109,39 @@ function addScore(value)
     }
 }
 
-function randomNumber() {
-    var rn = Math.floor(word.length * Math.random());
-    return rn;
-}
-
-function randomWord() {
-    var index = randomNumber();
-    var theWord = word[index];
-    return theWord;
-}
-
 function hasDoubleLetters(i) {
     return /(.)\1/.test(i.toLowerCase());
 }
 
+const consonants = ['j', 'q' , 'v', 'w', 'x', 'y', 'z'];
+const mostcons = ['b', 'c', 'd', 'f', 'g','h','k', 'l', 'm', 'n', 'p','s','t','r','a', 'e', 'i', 'o', 'u'];
+
 function chosenLetter() {
-    var letterNo = Math.floor(Math.random() * 26) + 97;
-    return String.fromCharCode(letterNo);
+    let letterNo = [];
+    while(letterNo.length<6)
+    {
+        var con = Math.floor(Math.random() * mostcons.length);
+        if(!letterNo.includes(mostcons[con]))
+        {
+            letterNo.push(mostcons[con]);
+        }
+    }
+    
+    var rare = Math.floor(Math.random() * consonants.length);
+    letterNo.push(consonants[rare]);
+    return letterNo;
 }
 
 function codeChar() {
-    let letters =[];
-    
-    while (letters.length < 7) {
-        let newLetter = chosenLetter();
-        if (!letters.includes(newLetter)) {
-            letters.push(newLetter);
-        }
-    }
+    letters = chosenLetter();
 
-    p1 = letters[2].toUpperCase();
-    p2 = letters[0].toUpperCase();
-    p3 = letters[3].toUpperCase();
-    p4 = letters[1].toUpperCase();
-    p5 = letters[6].toUpperCase();
-    p6 = letters[4].toUpperCase();
-    p7 = letters[5].toUpperCase();
-
-    document.querySelector(".b1").textContent = p1;
-    document.querySelector(".b2").textContent = p2;
-    document.querySelector(".b3").textContent = p3;
-    document.querySelector(".b4").textContent = p4;
-    document.querySelector(".b5").textContent = p5;
-    document.querySelector(".b6").textContent = p6;
-    document.querySelector(".b7").textContent = p7;
+    document.querySelector(".b1").textContent = letters[0].toUpperCase();
+    document.querySelector(".b2").textContent = letters[1].toUpperCase();
+    document.querySelector(".b3").textContent = letters[3].toUpperCase();
+    document.querySelector(".b4").textContent = letters[2].toUpperCase();
+    document.querySelector(".b5").textContent = letters[4].toUpperCase();
+    document.querySelector(".b6").textContent = letters[5].toUpperCase();
+    document.querySelector(".b7").textContent = letters[6].toUpperCase();
 
     return letters;
 }
