@@ -7,7 +7,7 @@ fetch('words.json')
   })
   .then(data => {
     word = data.words;
-    let letterList = codeChar();
+    let letterList = chooseLetters();
 
     for (let i = 0; i < 7; i++) {
         document.querySelectorAll(".letter-bubble")[i].addEventListener("click", function () {
@@ -57,7 +57,7 @@ fetch('words.json')
 
                 noOfWords++;
 
-                var prog = madeWord.length+5;
+                var prog = madeWord.length;
                 addScore(prog);
 
             }
@@ -109,39 +109,45 @@ function addScore(value)
     }
 }
 
-function hasDoubleLetters(i) {
-    return /(.)\1/.test(i.toLowerCase());
+function chooseWord()
+{
+    var chosenWordIndex = Math.floor(Math.random() * word.length);
+    if(word[chosenWordIndex].length==7)
+    {
+        return word[chosenWordIndex];
+    }
+    else
+    {
+        return chooseWord();
+    }
 }
 
-const consonants = ['j', 'q' , 'v', 'w', 'x', 'y', 'z'];
-const mostcons = ['b', 'c', 'd', 'f', 'g','h','k', 'l', 'm', 'n', 'p','s','t','r','a', 'e', 'i', 'o', 'u'];
-
-function chosenLetter() {
-    let letterNo = [];
-    while(letterNo.length<6)
+function chooseLetters()
+{
+    var letterArray = [];
+    var selectWord = chooseWord();
+    for(let letter of selectWord)
     {
-        var con = Math.floor(Math.random() * mostcons.length);
-        if(!letterNo.includes(mostcons[con]))
+        if(!letterArray.includes(letter))
         {
-            letterNo.push(mostcons[con]);
+            letterArray.push(letter);
         }
     }
-    
-    var rare = Math.floor(Math.random() * consonants.length);
-    letterNo.push(consonants[rare]);
-    return letterNo;
-}
 
-function codeChar() {
-    letters = chosenLetter();
+    const alphabet = "abcdefghijklmnopqrstuvwxyz";
+    while (letterArray.length < 7) {
+        let randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+        if (!letterArray.includes(randomLetter)) {
+            letterArray.push(randomLetter);
+        }
+    }
 
-    document.querySelector(".b1").textContent = letters[0].toUpperCase();
-    document.querySelector(".b2").textContent = letters[1].toUpperCase();
-    document.querySelector(".b3").textContent = letters[3].toUpperCase();
-    document.querySelector(".b4").textContent = letters[2].toUpperCase();
-    document.querySelector(".b5").textContent = letters[4].toUpperCase();
-    document.querySelector(".b6").textContent = letters[5].toUpperCase();
-    document.querySelector(".b7").textContent = letters[6].toUpperCase();
+    letterArray = letterArray.sort(() => Math.random() - 0.5);
 
-    return letters;
+    for(var i = 0;i<7;i++)
+    {
+        document.querySelectorAll(".letter-bubble")[i].innerHTML = letterArray[i].toUpperCase();
+    }
+
+    return letterArray;
 }
